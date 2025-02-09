@@ -36,6 +36,7 @@ DigitalOut systemBlockedLed(LED2);
 
 InterruptIn motorDirection1Button(PF_9);
 InterruptIn motorDirection2Button(PF_8);
+InterruptIn motorStopButton(PG_1); // created a new stop button and assigned it to the button connected to PG_1
 
 
 //=====[Declaration of external public global variables]=======================
@@ -71,6 +72,7 @@ static void userInterfaceDisplayAlarmStateUpdate();
 
 static void motorDirection1ButtonCallback();
 static void motorDirection2ButtonCallback();
+static void motorStopButtonCallback(); // created a callback for the stop button
 
 //=====[Implementations of public functions]===================================
 
@@ -78,9 +80,11 @@ void userInterfaceInit()
 {
     motorDirection1Button.mode(PullUp);
     motorDirection2Button.mode(PullUp);
+    motorStopButton.mode(PullUp); // assigning the motor stop button as a pullup
 
     motorDirection1Button.fall(&motorDirection1ButtonCallback);
     motorDirection2Button.fall(&motorDirection2ButtonCallback);
+    motorStopButton.fall(&motorStopButtonCallback); // following the pattern of the other two buttons
     
     incorrectCodeLed = OFF;
     systemBlockedLed = OFF;
@@ -297,4 +301,9 @@ static void motorDirection1ButtonCallback()
 static void motorDirection2ButtonCallback()
 {
     motorDirectionWrite( DIRECTION_2 );
+}
+
+static void motorStopButtonCallback() 
+{
+    motorDirectionWrite( STOP ); // stops the motor
 }
